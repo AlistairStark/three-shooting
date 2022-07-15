@@ -1,46 +1,35 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { SceneManager } from './scene'
 
-const scene = new THREE.Scene()
-
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-camera.position.z = 2
+const sceneManager = new SceneManager()
 
 const renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
 
-const controls = new OrbitControls(camera, renderer.domElement)
+const controls = new OrbitControls(sceneManager.camera, renderer.domElement)
+controls.enableZoom = false
+controls.enableRotate = true
 
-const geometry = new THREE.BoxGeometry()
-const material = new THREE.MeshBasicMaterial({
-    color: 0x00ff00,
-    wireframe: true,
-})
-
-const cube = new THREE.Mesh(geometry, material)
-scene.add(cube)
-
-window.addEventListener('resize', onWindowResize, false)
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
-    render()
-}
+// const raycaster = new THREE.Raycaster()
+// const dir = new THREE.Vector3()
 
 function animate() {
     requestAnimationFrame(animate)
-
-    cube.rotation.x += 0.01
-    cube.rotation.y += 0.01
-
-    controls.update()
-
+    sceneManager.updateFrame()
+    // raycaster.set(
+    //     controls.target,
+    //     dir.subVectors(sceneManager.camera.position, controls.target).normalize()
+    // )
+    // const intersects = raycaster.intersectObjects(sceneManager.scene.children, false)
+    // if (intersects.length > 0) {
+    //     console.log(intersects)
+    // }
     render()
 }
 
 function render() {
-    renderer.render(scene, camera)
+    renderer.render(sceneManager.scene, sceneManager.camera)
 }
 animate()
