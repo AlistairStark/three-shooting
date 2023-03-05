@@ -150,7 +150,11 @@ export class PlayerObject implements GameObject {
     private fire() {
         if (this.isFiring && this.canFire) {
             this.sceneManager.add(
-                new Projectile(this.mesh.position.x, this.mesh.position.y, this.sceneManager)
+                Projectile.createNormalProjectile(
+                    this.mesh.position.x,
+                    this.mesh.position.y,
+                    this.sceneManager
+                )
             )
             this.canFire = false
             setTimeout(() => (this.canFire = true), this.FIRE_REST_MS)

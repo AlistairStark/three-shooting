@@ -1,23 +1,18 @@
-import * as THREE from 'three'
+import { getLetter } from '../fontLoader'
 import { SceneManager } from '../scene'
 import { NonPlayerObject } from './nonPlayerObject'
 
 export class EnemyObject extends NonPlayerObject {
-    constructor(x: number, y: number, sceneManager: SceneManager) {
-        const geometry = new THREE.BoxGeometry()
-        const material = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
-            wireframe: true,
-        })
-        const mesh = new THREE.Mesh(geometry, material)
-        super(sceneManager, geometry, material, mesh)
-        this.mesh.position.x = x
-        this.mesh.position.y = y
-        this.boundingBox.setFromObject(this.mesh)
+    public updateFrame(): void {
+        this.mesh.position.y += -0.05
+        this.updateBoundingBoxPos()
     }
 
-    public updateFrame(): void {
-        this.mesh.position.y += -0.1
-        this.updateBoundingBoxPos()
+    static createLetter(sceneManager: SceneManager, char: string, left: number): EnemyObject {
+        const letter = getLetter(char)
+        const enemy = new EnemyObject(sceneManager, letter.geometry, letter.material, letter.mesh)
+        enemy.mesh.position.x = left
+        enemy.mesh.position.y = 20 // calculate from other letters
+        return enemy
     }
 }

@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { getFont } from './fontLoader'
 import { SceneManager } from './scene'
 
 const sceneManager = new SceneManager()
@@ -12,24 +13,26 @@ const controls = new OrbitControls(sceneManager.camera, renderer.domElement)
 controls.enableZoom = false
 controls.enableRotate = true
 
-// const raycaster = new THREE.Raycaster()
-// const dir = new THREE.Vector3()
-
 function animate() {
     requestAnimationFrame(animate)
     sceneManager.updateFrame()
-    // raycaster.set(
-    //     controls.target,
-    //     dir.subVectors(sceneManager.camera.position, controls.target).normalize()
-    // )
-    // const intersects = raycaster.intersectObjects(sceneManager.scene.children, false)
-    // if (intersects.length > 0) {
-    //     console.log(intersects)
-    // }
     render()
 }
 
 function render() {
     renderer.render(sceneManager.scene, sceneManager.camera)
 }
-animate()
+
+function preload() {
+    const font = getFont()
+    setTimeout(() => {
+        if (!font) {
+            preload()
+        } else {
+            sceneManager.startScene()
+            animate()
+        }
+    }, 2000)
+}
+
+preload()
